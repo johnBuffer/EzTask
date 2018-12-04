@@ -7,6 +7,14 @@
 
 struct Geometry
 {
+	Geometry() = default;
+	Geometry(double x_, double y_) :
+		x(x_),
+		y(y_),
+		w(0.0),
+		h(0.0)
+	{}
+
 	double x, y, w, h;
 };
 
@@ -18,6 +26,11 @@ struct DrawContext
 
 struct Task
 {
+	Task() = default;
+	Task(double x, double y) :
+		bbox(x, y)
+	{}
+
 	void draw(sf::RenderTarget* target) const
 	{
 		sf::RectangleShape box(sf::Vector2f(bbox.w, bbox.h));
@@ -29,8 +42,8 @@ struct Task
 
 	void updateGeometry(DrawContext context)
 	{
-		const uint32_t h_padding = 40;
-		const uint32_t v_padding = 40;
+		const uint32_t h_padding = 25;
+		const uint32_t v_padding = 25;
 
 		double x = context.x_orig;
 		double y = context.y_orig;
@@ -39,15 +52,13 @@ struct Task
 		double width = scale;
 		double height = width / 2;
 
-		bbox.x = x;
-		bbox.y = y;
+		target_pos.x = x;
+		target_pos.y = y;
 		bbox.w = width;
 		bbox.h = height;
 
 		if (!sub_tasks.empty())
 		{
-			double sub_width = width / 2;
-
 			// Compute start of coord to draw subs
 			double sub_start = x - _sub_width / 2;
 			for (Task* t : sub_tasks)
@@ -65,7 +76,7 @@ struct Task
 
 	void updateWidth(uint32_t level)
 	{
-		const uint32_t h_padding = 30;
+		const uint32_t h_padding = 25;
 
 		_width = 512 / pow(2, level);
 		_sub_width = 0;
@@ -83,9 +94,10 @@ struct Task
 		}
 	}
 
-	void addAt(const sf::Vector2i& coord)
+	void update()
 	{
-
+		bbox.x += (target_pos.x - bbox.x) * 0.1;
+		bbox.y += (target_pos.y - bbox.y) * 0.1;
 	}
 
 	std::string name;
@@ -94,7 +106,7 @@ struct Task
 	double _width;
 	double _sub_width;
 
-	Geometry bbox;
+	Geometry bbox, target_pos;
 };
 
 
@@ -117,6 +129,14 @@ struct TaskTree
 		tasks.front().updateGeometry(context);
 	}
 
+	void update()
+	{
+		for (Task& t : tasks)
+		{
+			t.update();
+		}
+	}
+
 	void draw(sf::RenderTarget* target) const
 	{
 		for (const Task& t : tasks)
@@ -137,7 +157,7 @@ struct TaskTree
 
 			if (coord.x > lx && coord.x < ux && coord.y > ly && coord.y < uy)
 			{
-				tasks.emplace_back();
+				tasks.emplace_back(t.bbox.x, t.bbox.y);
 				t.sub_tasks.push_back(&tasks.back());
 				updateGeometry();
 				break;
@@ -152,6 +172,8 @@ struct TaskTree
 int main()
 {
 	sf::RenderWindow window(sf::VideoMode(1000, 1000), "EzTask");
+	window.setFramerateLimit(60);
+
 	sf::CircleShape shape(100.f);
 	shape.setFillColor(sf::Color::Green);
 
@@ -169,6 +191,8 @@ int main()
 				tree.add(sf::Mouse::getPosition(window));
 			}
 		}
+
+		tree.update();
 
 		window.clear();
 
