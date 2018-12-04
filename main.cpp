@@ -17,23 +17,33 @@ struct Task
 		double y = context.y_orig;
 
 		double scale = 512 / pow(2, context.level);
-		double width = scale - 10;
+		double width = scale;
 		double height = width / 2;
 
 		sf::RectangleShape box(sf::Vector2f(width, height));
-		box.setOrigin(width / 2, 0);
 		box.setPosition(x, y);
 		target->draw(box);
 
 		if (!sub_tasks.empty())
 		{
+			const uint32_t h_padding = 10;
+			const uint32_t v_padding = 20;
+			
 			uint32_t i = 0;
+			uint32_t n = sub_tasks.size();
+			
+			double sub_width = width / 2;
+			double spacing = sub_width + h_padding;
+			double total_width = n * spacing - h_padding;
+
+			const double sub_start = x + sub_width - total_width / 2;
+
 			for (const Task& t : sub_tasks)
 			{
 				DrawContext sub_context;
 				sub_context.level = context.level + 1;
-				sub_context.x_orig = scale * i + 10;
-				sub_context.y_orig = y + height + 10;
+				sub_context.x_orig = sub_start + spacing * i;
+				sub_context.y_orig = y + height + v_padding;
 
 				++i;
 				t.draw(target, sub_context);
@@ -52,7 +62,7 @@ int main()
 	shape.setFillColor(sf::Color::Green);
 
 	DrawContext context;
-	context.x_orig = 500;
+	context.x_orig = 250;
 	context.y_orig = 10;
 	context.level = 0;
 
