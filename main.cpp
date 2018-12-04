@@ -2,6 +2,13 @@
 
 #include <vector>
 #include <string>
+#include <list>
+#include <iostream>
+
+struct Geometry
+{
+	double x, y, w, h;
+};
 
 struct DrawContext
 {
@@ -11,56 +18,47 @@ struct DrawContext
 
 struct Task
 {
-	void draw(sf::RenderTarget* target, DrawContext context) const
+	void draw(sf::RenderTarget* target) const
 	{
+		sf::RectangleShape box(sf::Vector2f(bbox.w, bbox.h));
+		box.setOrigin(bbox.w / 2, 0);
+		box.setPosition(bbox.x, bbox.y);
+
+		target->draw(box);
+	}
+
+	void updateGeometry(DrawContext context)
+	{
+		const uint32_t h_padding = 40;
+		const uint32_t v_padding = 40;
+
 		double x = context.x_orig;
 		double y = context.y_orig;
 
 		double scale = 512 / pow(2, context.level);
 		double width = scale;
-		double height = width / 3;
+		double height = width / 2;
 
-		sf::RectangleShape box(sf::Vector2f(width, height));
-		box.setOrigin(width / 2, 0);
-		box.setPosition(x, y);
-		target->draw(box);
-
-		sf::RectangleShape box_width(sf::Vector2f(_width, 2));
-		box_width.setOrigin(_width / 2, 0);
-		box_width.setPosition(x, y+height);
-		box_width.setFillColor(sf::Color::Red);
-		target->draw(box_width);
+		bbox.x = x;
+		bbox.y = y;
+		bbox.w = width;
+		bbox.h = height;
 
 		if (!sub_tasks.empty())
 		{
-			const uint32_t h_padding = 30;
-			const uint32_t v_padding = 10;
-			
-			uint32_t i = 0;
-			uint32_t n = sub_tasks.size();
-			
 			double sub_width = width / 2;
 
-			// Compute total width
-			double total_width = 0;
-			for (const Task& t : sub_tasks)
-			{
-				total_width += t._width + h_padding;
-			}
-			total_width -= h_padding;
-
 			// Compute start of coord to draw subs
-			double sub_start = x - total_width / 2;
-			for (const Task& t : sub_tasks)
+			double sub_start = x - _sub_width / 2;
+			for (Task* t : sub_tasks)
 			{
 				DrawContext sub_context;
 				sub_context.level = context.level + 1;
-				sub_context.x_orig = sub_start + t._width / 2;
+				sub_context.x_orig = sub_start + t->_width / 2;
 				sub_context.y_orig = y + height + v_padding;
+				t->updateGeometry(sub_context);
 
-				sub_start += t._width + h_padding;
-
-				t.draw(target, sub_context);
+				sub_start += t->_width + h_padding;
 			}
 		}
 	}
@@ -70,26 +68,86 @@ struct Task
 		const uint32_t h_padding = 30;
 
 		_width = 512 / pow(2, level);
+		_sub_width = 0;
 
 		if (!sub_tasks.empty())
 		{
-			double tmp_width = 0;
-			for (Task& t : sub_tasks)
+			for (Task* t : sub_tasks)
 			{
-				t.updateWidth(level + 1);
-				tmp_width += t._width + h_padding;
+				t->updateWidth(level + 1);
+				_sub_width += t->_width + h_padding;
 			}
 			
-			_width = std::max(tmp_width - h_padding, _width);
+			_sub_width -= h_padding;
+			_width = std::max(_width, _sub_width);
 		}
+	}
+
+	void addAt(const sf::Vector2i& coord)
+	{
 
 	}
 
 	std::string name;
-	std::vector<Task> sub_tasks;
+	std::list<Task*> sub_tasks;
 
 	double _width;
+	double _sub_width;
+
+	Geometry bbox;
 };
+
+
+struct TaskTree
+{
+	TaskTree()
+	{
+		tasks.push_back(Task());
+		updateGeometry();
+	}
+
+	void updateGeometry()
+	{
+		DrawContext context;
+		context.x_orig = 500;
+		context.y_orig = 10;
+		context.level = 0;
+
+		tasks.front().updateWidth(0);
+		tasks.front().updateGeometry(context);
+	}
+
+	void draw(sf::RenderTarget* target) const
+	{
+		for (const Task& t : tasks)
+		{
+			t.draw(target);
+		}
+	}
+
+	void add(const sf::Vector2i& coord)
+	{
+		for (Task& t : tasks)
+		{
+			double lx = t.bbox.x - t.bbox.w / 2;
+			double ux = t.bbox.x + t.bbox.w / 2;
+
+			double ly = t.bbox.y;
+			double uy = t.bbox.y + t.bbox.h;
+
+			if (coord.x > lx && coord.x < ux && coord.y > ly && coord.y < uy)
+			{
+				tasks.emplace_back();
+				t.sub_tasks.push_back(&tasks.back());
+				updateGeometry();
+				break;
+			}
+		}
+	}
+
+	std::list<Task> tasks;
+};
+
 
 int main()
 {
@@ -97,22 +155,7 @@ int main()
 	sf::CircleShape shape(100.f);
 	shape.setFillColor(sf::Color::Green);
 
-	DrawContext context;
-	context.x_orig = 500;
-	context.y_orig = 10;
-	context.level = 0;
-
-	Task root, t1, t2, t3, t4, t5;
-	
-	t4.sub_tasks.push_back(t5);
-	
-	t2.sub_tasks.push_back(t3);
-	t2.sub_tasks.push_back(t4);
-
-	root.sub_tasks.push_back(t1);
-	root.sub_tasks.push_back(t2);
-	root.updateWidth(0);
-
+	TaskTree tree;
 
 	while (window.isOpen())
 	{
@@ -121,12 +164,16 @@ int main()
 		{
 			if (event.type == sf::Event::Closed)
 				window.close();
+			else if (event.type == sf::Event::MouseButtonPressed)
+			{
+				tree.add(sf::Mouse::getPosition(window));
+			}
 		}
 
 		window.clear();
-		
-		root.draw(&window, context);
 
+		tree.draw(&window);
+		
 		window.display();
 	}
 
