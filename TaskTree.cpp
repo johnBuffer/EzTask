@@ -29,3 +29,13 @@ void TaskTree::addTaskAt(const sf::Vector2i& coord)
 		m_renderer.addSubTask(m_tasks.back(), gtask);
 	}
 }
+
+void TaskTree::addOffset(double x, double y)
+{
+	m_renderer.addOffset(x, y);
+}
+
+void TaskTree::zoom(double z)
+{
+	m_renderer.zoom(z);
+}

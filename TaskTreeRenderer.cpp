@@ -4,6 +4,9 @@
 TaskTreeRenderer::TaskTreeRenderer() :
 	m_padding(25, 25)
 {
+	m_viewport.zoom = 1.0;
+	m_viewport.offset = { 0.0, 0.0 };
+	m_viewport.dimension = { 1000.0, 1000.0 };
 }
 
 void TaskTreeRenderer::update()
@@ -44,8 +47,9 @@ void TaskTreeRenderer::addSubTask(Task& task, GTask* gtask)
 	updateBboxes();
 }
 
-GTask* TaskTreeRenderer::getTaskAt(const sf::Vector2f & coord)
+GTask* TaskTreeRenderer::getTaskAt(const sf::Vector2f& coord)
 {
+	sf::Vector2f r_coord = m_viewport.getRealCoord(coord.x, coord.y);
 	for (GTask& t : m_bboxes)
 	{
 		double lx = t.pos.x - t.pos.w / 2;
@@ -54,7 +58,7 @@ GTask* TaskTreeRenderer::getTaskAt(const sf::Vector2f & coord)
 		double ly = t.pos.y;
 		double uy = t.pos.y + t.pos.h;
 
-		if (coord.x > lx && coord.x < ux && coord.y > ly && coord.y < uy)
+		if (r_coord.x > lx && r_coord.x < ux && r_coord.y > ly && r_coord.y < uy)
 		{
 			return &t;
 		}
@@ -63,13 +67,23 @@ GTask* TaskTreeRenderer::getTaskAt(const sf::Vector2f & coord)
 	return nullptr;
 }
 
-void TaskTreeRenderer::draw(sf::RenderTarget * target) const
+void TaskTreeRenderer::addOffset(double x, double y)
+{
+	m_viewport.addOffset(x, y);
+}
+
+void TaskTreeRenderer::zoom(double z)
+{
+	m_viewport.zoom *= z;
+}
+
+void TaskTreeRenderer::draw(sf::RenderTarget* target) const
 {
 	for (const GTask& task : m_bboxes)
 	{
-		sf::RectangleShape box(sf::Vector2f(task.pos.w, task.pos.h));
-		box.setOrigin(task.pos.w / 2, 0);
-		box.setPosition(task.pos.x, task.pos.y);
+		sf::RectangleShape box(sf::Vector2f(task.pos.w * m_viewport.zoom, task.pos.h * m_viewport.zoom));
+		box.setOrigin(task.pos.w * m_viewport.zoom / 2, 0);
+		box.setPosition(m_viewport.getViewportCoord(task.pos.x, task.pos.y));
 
 		target->draw(box);
 	}
@@ -83,6 +97,8 @@ void TaskTreeRenderer::updateBbox(GTask& task, Context context)
 	task.target.x = x;
 	task.target.y = y;
 
+	double scale = 1.0 / pow(2, context.level);
+
 	std::list<GTask*> subs = task.sub_tasks;
 	if (!subs.empty())
 	{
@@ -93,11 +109,11 @@ void TaskTreeRenderer::updateBbox(GTask& task, Context context)
 			Context sub_context;
 			sub_context.level = context.level + 1;
 			sub_context.bbox.x = sub_start + t->width / 2;
-			sub_context.bbox.y = y + task.pos.h + m_padding.y;
+			sub_context.bbox.y = y + task.pos.h + m_padding.y * scale;
 
 			updateBbox(*t, sub_context);
 
-			sub_start += t->width + m_padding.x;
+			sub_start += t->width + m_padding.x * scale;
 		}
 	}
 }
@@ -129,7 +145,8 @@ void TaskTreeRenderer::addToGTree(Task& task, GTask* top_task)
 
 void TaskTreeRenderer::computeWidth(GTask& task, uint32_t level)
 {
-	task.width = max_size / pow(2, level);
+	double scale = 1.0 / pow(2, level);
+	task.width = max_size * scale;
 
 	task.pos.w = task.width;
 	task.pos.h = task.width / 2;
@@ -141,10 +158,10 @@ void TaskTreeRenderer::computeWidth(GTask& task, uint32_t level)
 		for (GTask* t : task.sub_tasks)
 		{
 			computeWidth(*t, level + 1);
-			task.sub_width += t->width + m_padding.x;
+			task.sub_width += t->width + m_padding.x * scale;
 		}
 
-		task.sub_width -= m_padding.x;
+		task.sub_width -= m_padding.x * scale;
 		task.width = std::max(task.width, task.sub_width);
 	}
 }

@@ -15,6 +15,10 @@ public:
 
 	void addTaskAt(const sf::Vector2i& coord);
 
+	void addOffset(double x, double y);
+
+	void zoom(double z);
+
 private:
 	std::list<Task> m_tasks;
 
