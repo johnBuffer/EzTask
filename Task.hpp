@@ -4,7 +4,7 @@
 class Task
 {
 public:
-	Task();
+	Task() = default;
 
 	const std::list<Task*>& getSubs() const;
 

@@ -4,7 +4,7 @@
 #include <string>
 #include <list>
 #include <iostream>
-
+/*
 struct Geometry
 {
 	Geometry() = default;
@@ -80,7 +80,7 @@ struct Task
 	Geometry bbox, target_pos;
 };
 
-
+/*
 struct TaskTree
 {
 	TaskTree()
@@ -137,7 +137,7 @@ struct TaskTree
 	}
 
 	std::list<Task> tasks;
-};
+};*/
 
 
 int main()
@@ -148,7 +148,7 @@ int main()
 	sf::CircleShape shape(100.f);
 	shape.setFillColor(sf::Color::Green);
 
-	TaskTree tree;
+	//TaskTree tree;
 
 	while (window.isOpen())
 	{
@@ -159,15 +159,15 @@ int main()
 				window.close();
 			else if (event.type == sf::Event::MouseButtonPressed)
 			{
-				tree.add(sf::Mouse::getPosition(window));
+				//tree.add(sf::Mouse::getPosition(window));
 			}
 		}
 
-		tree.update();
+		//tree.update();
 
 		window.clear();
 
-		tree.draw(&window);
+		//tree.draw(&window);
 		
 		window.display();
 	}

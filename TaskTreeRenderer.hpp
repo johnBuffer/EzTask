@@ -18,9 +18,13 @@ struct Bbox
 	double x, y, w, h;
 };
 
-struct BboxAnim
+struct GTask
 {
+	const Task* task;
 	Bbox pos, target;
+	double width;
+
+	std::list<GTask*> sub_tasks;
 };
 
 struct Context
@@ -42,15 +46,19 @@ class TaskTreeRenderer
 public:
 	void update();
 
+	void generateGTree(const Task& root_task);
 	void updateBboxes(const Task& task);
 
 	void draw(sf::RenderTarget* target) const;
 
 private:
-	std::vector<BboxAnim> m_bboxes;
+	std::vector<GTask> m_bboxes;
 
 	sf::Vector2f m_padding;
 	const double max_size = 512.0;
+
+	void addToGTree(const Task& task, GTask* super);
+	void computeWidth(GTask& task, uint32_t level);
 
 	void updateBbox(const Task& task, Context context);
 };
