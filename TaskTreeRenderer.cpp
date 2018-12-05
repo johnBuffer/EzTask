@@ -2,7 +2,7 @@
 #include <iostream>
 
 TaskTreeRenderer::TaskTreeRenderer() :
-	m_padding(100, 100)
+	m_padding(100, 200)
 {
 	m_viewport.zoom = 1.0;
 	m_viewport.offset = { 0.0, 0.0 };

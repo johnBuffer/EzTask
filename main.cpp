@@ -39,13 +39,13 @@ int main()
 				if (mouse_pos == click_position)
 					tree.addTaskAt(mouse_pos);
 			}
-			else if (event.type == sf::Event::KeyPressed)
+			else if (event.type == sf::Event::MouseWheelScrolled)
 			{
-				if (event.key.code == sf::Keyboard::A)
+				if (event.mouseWheelScroll.delta > 0)
 				{
 					tree.zoom(1.25);
 				}
-				else if (event.key.code == sf::Keyboard::E)
+				else
 				{
 					tree.zoom(0.8);
 				}
