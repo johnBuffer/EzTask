@@ -2,6 +2,7 @@
 
 #include <SFML/Graphics.hpp>
 #include "Task.hpp"
+#include "TaskTreeRenderer.hpp"
 
 class TaskTree
 {
@@ -16,4 +17,6 @@ public:
 
 private:
 	std::list<Task> m_tasks;
+
+	TaskTreeRenderer m_renderer;
 };

@@ -20,10 +20,10 @@ struct Bbox
 
 struct GTask
 {
-	const Task* task;
+	Task* task;
 	Bbox pos, target;
 	double width;
-
+	double sub_width;
 	std::list<GTask*> sub_tasks;
 };
 
@@ -44,21 +44,26 @@ struct Viewport
 class TaskTreeRenderer
 {
 public:
+	TaskTreeRenderer();
+
 	void update();
 
-	void generateGTree(const Task& root_task);
-	void updateBboxes(const Task& task);
+	void generateGTree(Task& root_task);
+	void updateBboxes();
+
+	void addSubTask(Task& task, GTask* gtask);
+	GTask* getTaskAt(const sf::Vector2f& coord);
 
 	void draw(sf::RenderTarget* target) const;
 
 private:
-	std::vector<GTask> m_bboxes;
+	std::list<GTask> m_bboxes;
 
 	sf::Vector2f m_padding;
 	const double max_size = 512.0;
 
-	void addToGTree(const Task& task, GTask* super);
+	void addToGTree(Task& task, GTask* super);
 	void computeWidth(GTask& task, uint32_t level);
 
-	void updateBbox(const Task& task, Context context);
+	void updateBbox(GTask& task, Context context);
 };
