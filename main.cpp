@@ -42,36 +42,7 @@ struct Task
 
 	void updateGeometry(DrawContext context)
 	{
-		const uint32_t h_padding = 25;
-		const uint32_t v_padding = 25;
-
-		double x = context.x_orig;
-		double y = context.y_orig;
-
-		double scale = 512 / pow(2, context.level);
-		double width = scale;
-		double height = width / 2;
-
-		target_pos.x = x;
-		target_pos.y = y;
-		bbox.w = width;
-		bbox.h = height;
-
-		if (!sub_tasks.empty())
-		{
-			// Compute start of coord to draw subs
-			double sub_start = x - _sub_width / 2;
-			for (Task* t : sub_tasks)
-			{
-				DrawContext sub_context;
-				sub_context.level = context.level + 1;
-				sub_context.x_orig = sub_start + t->_width / 2;
-				sub_context.y_orig = y + height + v_padding;
-				t->updateGeometry(sub_context);
-
-				sub_start += t->_width + h_padding;
-			}
-		}
+		
 	}
 
 	void updateWidth(uint32_t level)
