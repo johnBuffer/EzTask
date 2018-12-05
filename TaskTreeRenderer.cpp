@@ -8,7 +8,7 @@ TaskTreeRenderer::TaskTreeRenderer() :
 
 void TaskTreeRenderer::update()
 {
-	const double speed = 0.1;
+	const double speed = 0.25;
 	for (GTask& task : m_bboxes)
 	{
 		task.pos.x += (task.target.x - task.pos.x) * speed;
@@ -113,6 +113,7 @@ void TaskTreeRenderer::addToGTree(Task& task, GTask* top_task)
 	if (top_task)
 	{
 		top_task->sub_tasks.push_back(&current_gtask);
+		current_gtask.pos = top_task->pos;
 	}
 
 	// Add subs
