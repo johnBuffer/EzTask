@@ -5,28 +5,8 @@
 
 #include "Task.hpp"
 #include "Viewport.hpp"
-
-struct Bbox
-{
-	Bbox() = default;
-	Bbox(double x_, double y_, double w_, double h_) :
-		x(x_),
-		y(y_),
-		w(w_),
-		h(h_)
-	{}
-
-	double x, y, w, h;
-};
-
-struct GTask
-{
-	Task* task;
-	Bbox pos, target;
-	double width;
-	double sub_width;
-	std::list<GTask*> sub_tasks;
-};
+#include "utils.hpp"
+#include "GTask.hpp"
 
 struct Context
 {
@@ -61,4 +41,7 @@ private:
 	void addToGTree(Task& task, GTask* super);
 	void computeWidth(GTask& task, uint32_t level);
 	void updateBbox(GTask& task, Context context);
+	void renderTask(sf::RenderTarget* target, GTask* task) const;
+
+	uint32_t box_count;
 };

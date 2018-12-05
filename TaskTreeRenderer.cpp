@@ -2,7 +2,7 @@
 #include <iostream>
 
 TaskTreeRenderer::TaskTreeRenderer() :
-	m_padding(25, 25)
+	m_padding(100, 100)
 {
 	m_viewport.zoom = 1.0;
 	m_viewport.offset = { 0.0, 0.0 };
@@ -117,6 +117,12 @@ void TaskTreeRenderer::updateBbox(GTask& task, Context context)
 		}
 	}
 }
+
+void TaskTreeRenderer::renderTask(sf::RenderTarget* target, GTask* task) const
+{
+
+}
+
 void TaskTreeRenderer::addToGTree(Task& task, GTask* top_task)
 {
 	// Create new GTask
