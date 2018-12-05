@@ -4,16 +4,19 @@
 class Task
 {
 public:
-	Task() = default;
+	Task();
 
 	void addSub(Task* task);
 
 	const std::list<Task*>& getSubs() const;
 
-	void setDone();
+	void setProgress(double p);
 
 private:
+	Task* m_top;
 	std::list<Task*> m_sub_tasks;
+
+	void updateProgress();
 
 	float m_progress;
 };
