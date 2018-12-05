@@ -2,7 +2,7 @@
 #include <iostream>
 
 TaskTreeRenderer::TaskTreeRenderer() :
-	m_padding(100, 200)
+	m_padding(100, 500)
 {
 	m_viewport.zoom = 1.0;
 	m_viewport.offset = { 0.0, 0.0 };
@@ -33,8 +33,8 @@ void TaskTreeRenderer::updateBboxes()
 	computeWidth(m_bboxes.front(), 0);
 
 	Context root_context;
-	root_context.bbox.x = 500;
-	root_context.bbox.y = m_padding.y;
+	root_context.bbox.x = 0;
+	root_context.bbox.y = -300;
 	root_context.level = 0;
 
 	updateBbox(m_bboxes.front(), root_context);
@@ -81,11 +81,7 @@ void TaskTreeRenderer::draw(sf::RenderTarget* target) const
 {
 	for (const GTask& task : m_bboxes)
 	{
-		sf::RectangleShape box(sf::Vector2f(task.pos.w * m_viewport.zoom, task.pos.h * m_viewport.zoom));
-		box.setOrigin(task.pos.w * m_viewport.zoom / 2, 0);
-		box.setPosition(m_viewport.getViewportCoord(task.pos.x, task.pos.y));
-
-		target->draw(box);
+		task.draw(target, m_viewport);
 	}
 }
 

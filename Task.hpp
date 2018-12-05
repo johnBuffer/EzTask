@@ -10,6 +10,10 @@ public:
 
 	const std::list<Task*>& getSubs() const;
 
+	void setDone();
+
 private:
 	std::list<Task*> m_sub_tasks;
+
+	float m_progress;
 };
