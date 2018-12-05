@@ -17,7 +17,7 @@ sf::Vector2f Viewport::getViewportCoord(double x, double y) const
 	return sf::Vector2f(vp_x, vp_y);
 }
 
-sf::Vector2f Viewport::getRealCoord(double x, double y) const
+sf::Vector2<double> Viewport::getRealCoord(double x, double y) const
 {
 	double x_1 = x - dimension.x * 0.5;
 	double y_1 = y - dimension.y * 0.5;
@@ -25,5 +25,5 @@ sf::Vector2f Viewport::getRealCoord(double x, double y) const
 	double r_x = x_1 / zoom + offset.x;
 	double r_y = y_1 / zoom + offset.y;
 
-	return sf::Vector2f(r_x, r_y);
+	return sf::Vector2<double>(r_x, r_y);
 }

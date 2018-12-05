@@ -49,7 +49,7 @@ void TaskTreeRenderer::addSubTask(Task& task, GTask* gtask)
 
 GTask* TaskTreeRenderer::getTaskAt(const sf::Vector2f& coord)
 {
-	sf::Vector2f r_coord = m_viewport.getRealCoord(coord.x, coord.y);
+	sf::Vector2<double> r_coord = m_viewport.getRealCoord(coord.x, coord.y);
 	for (GTask& t : m_bboxes)
 	{
 		double lx = t.pos.x - t.pos.w / 2;

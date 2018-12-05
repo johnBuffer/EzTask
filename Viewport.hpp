@@ -3,12 +3,12 @@
 
 struct Viewport
 {
-	sf::Vector2f offset;
-	sf::Vector2f dimension;
+	sf::Vector2<double> offset;
+	sf::Vector2<double> dimension;
 	double zoom;
 
 	void addOffset(double x, double y);
 
 	sf::Vector2f getViewportCoord(double x, double y) const;
-	sf::Vector2f getRealCoord(double x, double y) const;
+	sf::Vector2<double> getRealCoord(double x, double y) const;
 };
