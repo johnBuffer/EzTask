@@ -8,7 +8,11 @@
 
 int main()
 {
-	sf::RenderWindow window(sf::VideoMode(1000, 1000), "EzTask");
+	sf::ContextSettings settings;
+	settings.antialiasingLevel = 4;
+
+
+	sf::RenderWindow window(sf::VideoMode(1000, 1000), "EzTask", sf::Style::Default, settings);
 	window.setFramerateLimit(60);
 
 	sf::CircleShape shape(100.f);
