@@ -2,25 +2,45 @@
 #include "Connector.hpp"
 
 sf::Font GTask::s_font;
+uint32_t GTask::box_count;
 
 GTask::GTask() :
-	progress(0.0f)
+	progress(0.0f),
+	selected(false)
 {
 	
+}
+
+GTask::~GTask()
+{
+	if (top)
+	{
+		top->sub_tasks.remove_if([=](GTask* t) {return t == this; });
+	}
 }
 
 void GTask::draw(sf::RenderTarget* target, const Viewport& viewport) const
 {
 	double box_width = pos.w * viewport.zoom;
 	double box_height = pos.h * viewport.zoom;
+
+	if (box_height < 0.5)
+		return;
+
 	sf::Vector2f screen_pos = viewport.getViewportCoord(pos.x, pos.y);
 	double x = screen_pos.x - box_width * 0.5;
 	double y = screen_pos.y;
+	
+	++GTask::box_count;
 
 	// Draw whit background
 	sf::RectangleShape box(sf::Vector2f(box_width, box_height));
 	box.setOrigin(box_width * 0.5, 0);
 	box.setPosition(screen_pos);
+	if (selected)
+		box.setFillColor(sf::Color(200, 200, 200));
+	else
+		box.setFillColor(sf::Color::White);
 	target->draw(box);
 
 	// Draw header
@@ -72,6 +92,11 @@ void GTask::draw(sf::RenderTarget* target, const Viewport& viewport) const
 
 		if (y_text - y > 0.9 * box_height)
 			break;
+	}
+
+	for (const GTask* gt : sub_tasks)
+	{
+		gt->draw(target, viewport);
 	}
 }
 

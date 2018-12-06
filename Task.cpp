@@ -6,6 +6,15 @@ Task::Task() :
 {
 }
 
+Task::~Task()
+{
+	if (m_top)
+	{
+		m_top->m_sub_tasks.remove_if([=](Task* t) {return t == this; });
+		m_top->updateProgress();
+	}
+}
+
 void Task::addSub(Task* task)
 {
 	task->m_top = this;
