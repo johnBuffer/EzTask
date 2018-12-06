@@ -53,5 +53,5 @@ void GTask::draw(sf::RenderTarget* target, const Viewport& viewport) const
 
 void GTask::initialize()
 {
-	s_font.loadFromFile("C:/Users/Jean/Documents/Code/cpp/EzTask/font.otf");
+	s_font.loadFromFile("C:/fonts/font.ttf");
 }
