@@ -12,7 +12,7 @@ int main()
 	settings.antialiasingLevel = 4;
 
 	sf::RenderWindow window(sf::VideoMode(1000, 1000), "EzTask", sf::Style::Default, settings);
-	window.setFramerateLimit(60);
+	//window.setFramerateLimit(60);
 
 	sf::CircleShape shape(100.f);
 	shape.setFillColor(sf::Color::Green);
@@ -21,6 +21,7 @@ int main()
 	sf::Vector2i click_position;
 
 	TaskTree tree;
+	GTask::initialize();
 
 	while (window.isOpen())
 	{

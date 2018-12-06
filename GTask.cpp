@@ -1,6 +1,14 @@
 #include "GTask.hpp"
 #include "Connector.hpp"
 
+sf::Font GTask::s_font;
+
+GTask::GTask() :
+	progress(0.0f)
+{
+	
+}
+
 void GTask::draw(sf::RenderTarget* target, const Viewport& viewport) const
 {
 	double box_width = pos.w * viewport.zoom;
@@ -29,4 +37,21 @@ void GTask::draw(sf::RenderTarget* target, const Viewport& viewport) const
 		Connector c(gt, this);
 		c.draw(target, viewport);
 	}
+
+	sf::Text text;
+	text.setFont(s_font);
+	text.setCharacterSize(48);
+	text.setFillColor(sf::Color::Black);
+	
+	text.setScale(box_height*0.00375, box_height*0.00375);
+	text.setPosition(x, y);
+
+	text.setString("Task's name");
+
+	target->draw(text);
+}
+
+void GTask::initialize()
+{
+	s_font.loadFromFile("C:/Users/Jean/Documents/Code/cpp/EzTask/font.otf");
 }

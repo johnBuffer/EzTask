@@ -7,13 +7,18 @@
 
 struct GTask
 {
+	GTask();
+
 	Task* task;
 	Bbox pos, target;
 	double width;
 	double sub_width;
 	std::list<GTask*> sub_tasks;
-
 	float progress;
 
 	void draw(sf::RenderTarget* target, const Viewport& viewport) const;
+
+	// Static stuff
+	static sf::Font s_font;
+	static void initialize();
 };
