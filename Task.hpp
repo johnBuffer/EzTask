@@ -11,6 +11,7 @@ public:
 	const std::list<Task*>& getSubs() const;
 
 	void setProgress(double p);
+	float getProgress() const;
 
 private:
 	Task* m_top;

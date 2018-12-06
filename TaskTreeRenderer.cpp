@@ -16,6 +16,8 @@ void TaskTreeRenderer::update()
 	{
 		task.pos.x += (task.target.x - task.pos.x) * speed;
 		task.pos.y += (task.target.y - task.pos.y) * speed;
+
+		task.progress += (task.task->getProgress() - task.progress) * speed * 0.5f;
 	}
 }
 

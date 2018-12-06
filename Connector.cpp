@@ -23,12 +23,12 @@ void Connector::draw(sf::RenderTarget* target, const Viewport& viewport) const
 
 	for (uint32_t i(0); i < quality; ++i)
 	{
-		double y = 10*i/double(quality-1) - 5;
+		double y = 14*i/double(quality-1) - 7;
 
 		double x = dx * sigm(y);
 
 		va[i].position.x = screen_pos_1.x - x;
-		va[i].position.y = screen_pos_1.y - (y + 5)*0.1*dy;
+		va[i].position.y = screen_pos_1.y - (y + 7)/14.0*dy;
 	}
 
 	target->draw(va);

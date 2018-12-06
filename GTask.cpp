@@ -18,7 +18,9 @@ void GTask::draw(sf::RenderTarget* target, const Viewport& viewport) const
 
 	sf::RectangleShape header(sf::Vector2f(box_width, box_height * 0.25));
 	header.setPosition(x, y);
-	header.setFillColor(sf::Color::Green);
+
+	double p = progress;
+	header.setFillColor(sf::Color(255*(1-p), 255*p, 0));
 
 	target->draw(header);
 

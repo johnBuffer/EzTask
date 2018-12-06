@@ -11,7 +11,6 @@ int main()
 	sf::ContextSettings settings;
 	settings.antialiasingLevel = 4;
 
-
 	sf::RenderWindow window(sf::VideoMode(1000, 1000), "EzTask", sf::Style::Default, settings);
 	window.setFramerateLimit(60);
 
@@ -34,14 +33,26 @@ int main()
 				window.close();
 			else if (event.type == sf::Event::MouseButtonPressed)
 			{
-				clicking = true;
-				click_position = sf::Mouse::getPosition(window);
+				if (event.mouseButton.button == sf::Mouse::Left)
+				{
+					clicking = true;
+					click_position = sf::Mouse::getPosition(window);
+				}
 			}
 			else if (event.type == sf::Event::MouseButtonReleased)
 			{
-				clicking = false;
-				if (mouse_pos == click_position)
-					tree.addTaskAt(mouse_pos);
+				if (event.mouseButton.button == sf::Mouse::Left)
+				{
+					clicking = false;
+					if (mouse_pos == click_position)
+						tree.addTaskAt(mouse_pos);
+				}
+				else
+				{
+					Task* t = tree.getTaskAt(mouse_pos);
+					if (t)
+						t->setProgress(1.0f - t->getProgress());
+				}
 			}
 			else if (event.type == sf::Event::MouseWheelScrolled)
 			{

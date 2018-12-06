@@ -13,5 +13,7 @@ struct GTask
 	double sub_width;
 	std::list<GTask*> sub_tasks;
 
+	float progress;
+
 	void draw(sf::RenderTarget* target, const Viewport& viewport) const;
 };

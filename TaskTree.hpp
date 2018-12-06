@@ -14,6 +14,7 @@ public:
 	void update();
 
 	void addTaskAt(const sf::Vector2i& coord);
+	Task* getTaskAt(const sf::Vector2i& coord);
 
 	void addOffset(double x, double y);
 

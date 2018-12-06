@@ -30,6 +30,17 @@ void TaskTree::addTaskAt(const sf::Vector2i& coord)
 	}
 }
 
+Task* TaskTree::getTaskAt(const sf::Vector2i& coord)
+{
+	sf::Vector2f pos(coord.x, coord.y);
+	GTask* gtask = m_renderer.getTaskAt(pos);
+
+	if (gtask)
+		return gtask->task;
+
+	return nullptr;
+}
+
 void TaskTree::addOffset(double x, double y)
 {
 	m_renderer.addOffset(x, y);
