@@ -45,7 +45,6 @@ void TaskTreeRenderer::updateBboxes()
 void TaskTreeRenderer::addSubTask(Task& task, GTask* gtask)
 {
 	addToGTree(task, gtask);
-	
 	updateBboxes();
 }
 
@@ -69,6 +68,12 @@ GTask* TaskTreeRenderer::getTaskAt(const sf::Vector2f& coord)
 	return nullptr;
 }
 
+void TaskTreeRenderer::remove(GTask* gtask)
+{
+	m_bboxes.remove_if([=](GTask& t) {return &t == gtask; });
+	updateBboxes();
+}
+
 void TaskTreeRenderer::addOffset(double x, double y)
 {
 	m_viewport.addOffset(x, y);
@@ -81,10 +86,12 @@ void TaskTreeRenderer::zoom(double z)
 
 void TaskTreeRenderer::draw(sf::RenderTarget* target) const
 {
-	for (const GTask& task : m_bboxes)
+	GTask::box_count = 0;
+	/*for (const GTask& task : m_bboxes)
 	{
 		task.draw(target, m_viewport);
-	}
+	}*/
+	m_bboxes.front().draw(target, m_viewport);
 }
 
 void TaskTreeRenderer::updateBbox(GTask& task, Context context)
@@ -128,6 +135,7 @@ void TaskTreeRenderer::addToGTree(Task& task, GTask* top_task)
 	GTask& current_gtask = m_bboxes.back();
 
 	current_gtask.task = &task;
+	current_gtask.top = top_task;
 	
 	// Link to top_task
 	if (top_task)

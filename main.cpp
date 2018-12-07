@@ -4,6 +4,7 @@
 #include <string>
 #include <list>
 #include <iostream>
+#include <sstream>
 #include "TaskTree.hpp"
 
 int main()
@@ -23,6 +24,8 @@ int main()
 
 	TaskTree tree;
 	GTask::initialize();
+
+	GTask* selection = nullptr;
 
 	while (window.isOpen())
 	{
@@ -47,7 +50,19 @@ int main()
 				{
 					clicking = false;
 					if (mouse_pos == click_position)
-						tree.addTaskAt(mouse_pos);
+					{
+						if (selection)
+						{
+							selection->selected = false;
+						}
+
+						selection = tree.getGTaskAt(mouse_pos);
+
+						if (selection)
+						{
+							selection->selected = true;
+						}
+					}
 				}
 				else
 				{
@@ -67,6 +82,20 @@ int main()
 					tree.zoom(0.8);
 				}
 			}
+			else if (event.type == sf::Event::KeyPressed)
+			{
+				if (event.key.code == sf::Keyboard::Space)
+				{
+					if (selection)
+						tree.addTaskTo(selection);
+				}
+				else if (event.key.code == sf::Keyboard::Delete)
+				{
+					if (selection)
+						tree.removeGTask(selection);
+					selection = nullptr;
+				}
+			}
 		}
 
 		if (clicking)
@@ -82,6 +111,16 @@ int main()
 		tree.update();
 
 		window.clear();
+
+		std::stringstream sx;
+		sx << GTask::box_count << std::endl;
+		sf::Text text;
+		text.setFont(GTask::s_font);
+		text.setCharacterSize(24);
+		text.setFillColor(sf::Color::White);
+		text.setPosition(0, 0);
+		text.setString(sx.str());
+		window.draw(text);
 
 		tree.draw(&window);
 		

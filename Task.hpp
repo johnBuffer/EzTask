@@ -5,6 +5,7 @@ class Task
 {
 public:
 	Task();
+	~Task();
 
 	void addSub(Task* task);
 

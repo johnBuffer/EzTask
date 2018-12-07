@@ -13,8 +13,12 @@ public:
 
 	void update();
 
+	void addTaskTo(GTask* gtask);
 	void addTaskAt(const sf::Vector2i& coord);
 	Task* getTaskAt(const sf::Vector2i& coord);
+	GTask* getGTaskAt(const sf::Vector2i& coord);
+
+	void removeGTask(GTask* gtask);
 
 	void addOffset(double x, double y);
 
