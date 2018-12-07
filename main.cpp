@@ -12,7 +12,8 @@ int main()
 	settings.antialiasingLevel = 4;
 
 	sf::RenderWindow window(sf::VideoMode(1000, 1000), "EzTask", sf::Style::Default, settings);
-	//window.setFramerateLimit(60);
+	window.setFramerateLimit(60);
+	//window.setVerticalSyncEnabled(true);
 
 	sf::CircleShape shape(100.f);
 	shape.setFillColor(sf::Color::Green);
