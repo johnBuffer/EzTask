@@ -70,7 +70,8 @@ GTask* TaskTreeRenderer::getTaskAt(const sf::Vector2f& coord)
 
 void TaskTreeRenderer::remove(GTask* gtask)
 {
-	m_bboxes.remove_if([=](GTask& t) {return &t == gtask; });
+	gtask->removeFromParent();
+	recRemove(gtask);
 	updateBboxes();
 }
 
@@ -126,6 +127,16 @@ void TaskTreeRenderer::updateBbox(GTask& task, Context context)
 void TaskTreeRenderer::renderTask(sf::RenderTarget* target, GTask* task) const
 {
 
+}
+
+void TaskTreeRenderer::recRemove(GTask* gtask)
+{
+	auto& subs = gtask->sub_tasks;
+	for (GTask* gt : subs)
+	{
+		recRemove(gt);
+	}
+	m_bboxes.remove_if([=](GTask& t) {return &t == gtask; });
 }
 
 void TaskTreeRenderer::addToGTree(Task& task, GTask* top_task)

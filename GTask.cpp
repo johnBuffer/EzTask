@@ -13,6 +13,10 @@ GTask::GTask() :
 
 GTask::~GTask()
 {
+}
+
+void GTask::removeFromParent()
+{
 	if (top)
 	{
 		top->sub_tasks.remove_if([=](GTask* t) {return t == this; });

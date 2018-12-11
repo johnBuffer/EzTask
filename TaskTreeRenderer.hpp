@@ -43,6 +43,5 @@ private:
 	void computeWidth(GTask& task, uint32_t level);
 	void updateBbox(GTask& task, Context context);
 	void renderTask(sf::RenderTarget* target, GTask* task) const;
-
-	
+	void recRemove(GTask* gtask);
 };
