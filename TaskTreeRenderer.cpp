@@ -131,6 +131,7 @@ void TaskTreeRenderer::renderTask(sf::RenderTarget* target, GTask* task) const
 
 void TaskTreeRenderer::recRemove(GTask* gtask)
 {
+	// Recursive version of remove, deletes all childs and sub childs of gtask
 	auto& subs = gtask->sub_tasks;
 	for (GTask* gt : subs)
 	{
