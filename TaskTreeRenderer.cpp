@@ -137,6 +137,7 @@ void TaskTreeRenderer::recRemove(GTask* gtask)
 	{
 		recRemove(gt);
 	}
+	// Finally, removes the current task
 	m_bboxes.remove_if([=](GTask& t) {return &t == gtask; });
 }
 
